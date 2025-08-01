@@ -20,8 +20,8 @@ def main():
 
     # Check experiment name    
     df = pd.read_sql_query(f"SELECT name FROM sqlite_master WHERE type='table';", conn)
-    experiment_name = df.loc[0, 'name'].replace("_Per_Object", "")
-
+    experiment_name = df[df['name'].str.endswith('_Per_Object')]['name'].tolist()[0].replace('_Per_Object', '')
+    
     # Check number columns that need to be changed
     columns_to_change = [ col for col in pd.read_sql_query(f"SELECT * FROM {experiment_name}_Per_Image LIMIT 0", conn).columns.tolist() if col.startswith("Image_PathName")]
     image_paths = pd.read_sql_query(f"SELECT {', '.join(columns_to_change)} FROM {experiment_name}_Per_Image", conn)
